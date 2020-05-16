@@ -8,7 +8,8 @@ def get_stock_data(stock_symbol, start_date, end_date):
         'startDate': start_date,
         'endDate': end_date
     }
-    return requests.get(url, params).content
+    response = requests.get(url, params)
+    return response.json()
 
 
 if __name__ == '__main__':
