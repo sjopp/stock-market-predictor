@@ -25,6 +25,8 @@ class TestRetrievalOfData(unittest.TestCase):
                                       columns=['date', 'adjClose', 'adjHigh', 'adjLow', 'adjOpen',
                                                'adjVolume']).set_index('date')
 
+    expected_moving_averages = dataframe_expected.rolling(window=3).mean()
+
     @responses.activate
     def test_return_AAPL_current_stock_data_from_api(self):
         responses.add(responses.GET,
@@ -40,6 +42,11 @@ class TestRetrievalOfData(unittest.TestCase):
         actual_dataframe = src.retrieve_and_convert.convert_to_dataframe(self.json_expected)
         print(actual_dataframe)
         pd_test.assert_frame_equal(actual_dataframe, self.dataframe_expected)
+
+    def test_we_find_the_correct_moving_averages(self):
+        dataframe = src.retrieve_and_convert.convert_to_dataframe(self.json_expected)
+        actual_moving_averages = src.moving_averages.return_moving_average(dataframe)
+        pd_test.assert_frame_equal(actual_moving_averages, self.expected_moving_averages)
 
 
 if __name__ == '__main__':
