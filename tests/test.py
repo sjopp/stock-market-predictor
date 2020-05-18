@@ -1,5 +1,5 @@
 from .context import src
-import json
+from .context import return_json_test_resource
 import unittest
 import responses
 import pandas.testing as pd_test
@@ -8,8 +8,7 @@ import pandas as pd
 
 class TestRetrievalOfData(unittest.TestCase):
 
-    with open('B:\\workspace\\trading\\stock-market-predictor\\tests\\resources\\AAPL_12_2019.json') as f:
-        json_expected = json.load(f)
+    json_expected = return_json_test_resource('AAPL_12_2019.json')
 
     dataframe_expected = pd.DataFrame(json_expected,
                                       columns=['date', 'adjClose', 'adjHigh', 'adjLow', 'adjOpen',
