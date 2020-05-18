@@ -1,4 +1,5 @@
 import requests
+import pandas as pd
 
 
 def get_stock_data(stock_symbol, start_date, end_date):
@@ -10,6 +11,10 @@ def get_stock_data(stock_symbol, start_date, end_date):
     }
     response = requests.get(url, params)
     return response.json()
+
+
+def convert_to_dataframe(json_data):
+    return pd.DataFrame(json_data)
 
 
 if __name__ == '__main__':
