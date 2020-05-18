@@ -1,12 +1,11 @@
 from .context import src
 import unittest
 import responses
-import pandas.testing as pdtest
+import pandas.testing as pd_test
 import pandas as pd
 
 
 class TestRetrievalOfData(unittest.TestCase):
-
     json_expected = [
         {'date': '2019-12-26T00:00:00.000Z', 'close': 289.91, 'high': 289.98, 'low': 284.7, 'open': 284.82,
          'volume': 23334004, 'adjClose': 288.4514628933, 'adjHigh': 288.5211107234, 'adjLow': 283.2676744015,
@@ -21,7 +20,9 @@ class TestRetrievalOfData(unittest.TestCase):
          'volume': 25247625, 'adjClose': 292.1726469547, 'adjHigh': 292.2024960247, 'adjLow': 288.0634249832,
          'adjOpen': 288.4713622734, 'adjVolume': 25247625, 'divCash': 0.0, 'splitFactor': 1.0}]
 
-    dataframe_expected = pd.DataFrame(json_expected).set_index('date')
+    dataframe_expected = pd.DataFrame(json_expected,
+                                      columns=['date', 'adjClose', 'adjHigh', 'adjLow', 'adjOpen',
+                                               'adjVolume']).set_index('date')
 
     @responses.activate
     def test_return_AAPL_current_stock_data_from_api(self):
@@ -35,8 +36,9 @@ class TestRetrievalOfData(unittest.TestCase):
         self.assertEqual(self.json_expected, json_actual)
 
     def test_we_return_pandas_dataframe(self):
-        api_dataframe = src.convert_to_dataframe(self.json_expected)
-        pdtest.assert_frame_equal(api_dataframe, self.dataframe_expected)
+        actual_dataframe = src.convert_to_dataframe(self.json_expected)
+        print(actual_dataframe)
+        pd_test.assert_frame_equal(actual_dataframe, self.dataframe_expected)
 
 
 if __name__ == '__main__':

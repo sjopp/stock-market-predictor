@@ -15,13 +15,14 @@ def get_stock_data(stock_symbol, start_date, end_date):
 
 
 def convert_to_dataframe(json_data):
-    dataframe = pd.DataFrame(json_data).set_index('date')
+    dataframe = pd.DataFrame(json_data,
+                             columns=['date', 'adjClose', 'adjHigh',
+                                      'adjLow', 'adjOpen', 'adjVolume']).set_index('date')
     return dataframe
 
 
 if __name__ == '__main__':
-    aapl_data = get_stock_data('AAPL', '2019-12-25', '2020-1-1')
-    print(aapl_data)
-    appl_dataframe = convert_to_dataframe(aapl_data)
-    print(appl_dataframe)
-
+    AAPL_data = get_stock_data('AAPL', '2019-12-25', '2020-1-1')
+    print(AAPL_data)
+    AAPL_dataframe = convert_to_dataframe(AAPL_data)
+    print(AAPL_dataframe)
