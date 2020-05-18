@@ -6,6 +6,7 @@ import pandas as pd
 
 
 class TestRetrievalOfData(unittest.TestCase):
+
     json_expected = [
         {'date': '2019-12-26T00:00:00.000Z', 'close': 289.91, 'high': 289.98, 'low': 284.7, 'open': 284.82,
          'volume': 23334004, 'adjClose': 288.4514628933, 'adjHigh': 288.5211107234, 'adjLow': 283.2676744015,
@@ -31,12 +32,12 @@ class TestRetrievalOfData(unittest.TestCase):
                       '=387fd657063535f02ef5a5700aadd0b9286572e9&startDate=2019-12-25&endDate=2020-1-1',
                       json=self.json_expected, status=200)
 
-        json_actual = src.get_stock_data('AAPL', '2019-12-25', '2020-1-1')
+        json_actual = src.retrieve_and_convert.get_stock_data('AAPL', '2019-12-25', '2020-1-1')
 
         self.assertEqual(self.json_expected, json_actual)
 
     def test_we_return_pandas_dataframe(self):
-        actual_dataframe = src.convert_to_dataframe(self.json_expected)
+        actual_dataframe = src.retrieve_and_convert.convert_to_dataframe(self.json_expected)
         print(actual_dataframe)
         pd_test.assert_frame_equal(actual_dataframe, self.dataframe_expected)
 
