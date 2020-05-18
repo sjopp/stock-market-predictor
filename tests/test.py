@@ -4,6 +4,7 @@ import responses
 import pandas.testing as pdtest
 import pandas as pd
 
+
 class TestRetrievalOfData(unittest.TestCase):
 
     json_expected = [
@@ -20,7 +21,7 @@ class TestRetrievalOfData(unittest.TestCase):
          'volume': 25247625, 'adjClose': 292.1726469547, 'adjHigh': 292.2024960247, 'adjLow': 288.0634249832,
          'adjOpen': 288.4713622734, 'adjVolume': 25247625, 'divCash': 0.0, 'splitFactor': 1.0}]
 
-    dataframe_expected = pd.DataFrame(json_expected)
+    dataframe_expected = pd.DataFrame(json_expected).set_index('date')
 
     @responses.activate
     def test_return_AAPL_current_stock_data_from_api(self):
@@ -35,7 +36,6 @@ class TestRetrievalOfData(unittest.TestCase):
 
     def test_we_return_pandas_dataframe(self):
         api_dataframe = src.convert_to_dataframe(self.json_expected)
-        print(api_dataframe)
         pdtest.assert_frame_equal(api_dataframe, self.dataframe_expected)
 
 
