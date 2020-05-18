@@ -11,5 +11,4 @@ def return_json_test_resource(file_path):
 
 
 import src
-import tests
 
