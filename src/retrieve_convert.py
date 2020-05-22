@@ -14,7 +14,5 @@ def get_stock_data(stock_symbol, start_date, end_date):
 
 
 def convert_to_dataframe(json_data):
-    dataframe = pd.DataFrame(json_data,
-                             columns=['date', 'adjClose', 'adjHigh',
-                                      'adjLow', 'adjOpen', 'adjVolume']).set_index('date')
+    dataframe = pd.DataFrame(json_data, columns=['date', 'adjClose']).set_index('date')
     return dataframe

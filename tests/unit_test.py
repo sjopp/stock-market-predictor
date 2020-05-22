@@ -4,43 +4,52 @@ import unittest
 import responses
 import pandas.testing as pd_test
 import pandas as pd
+import numpy as np
+
+
+def return_dataframe_resource(file_path):
+    json_data = return_json_test_resource(file_path)
+    return pd.DataFrame(json_data, columns=['date', 'adjClose'], dtype=np.float64).set_index('date')
 
 
 class TestRetrievalOfData(unittest.TestCase):
 
-    json_expected = return_json_test_resource('AAPL_12_2019.json')
-
-    dataframe_expected = pd.DataFrame(json_expected,
-                                      columns=['date', 'adjClose', 'adjHigh', 'adjLow', 'adjOpen',
-                                               'adjVolume']).set_index('date')
+    resource = return_json_test_resource('AAPL_12_2019.json')
 
     @responses.activate
     def test_return_AAPL_current_stock_data_from_api(self):
         responses.add(responses.GET,
                       'https://api.tiingo.com/tiingo/daily/AAPL/prices?token'
                       '=387fd657063535f02ef5a5700aadd0b9286572e9&startDate=2019-12-25&endDate=2020-1-1',
-                      json=self.json_expected, status=200)
+                      json=self.resource, status=200)
 
         json_actual = src.retrieve_and_convert.get_stock_data('AAPL', '2019-12-25', '2020-1-1')
 
-        self.assertEqual(self.json_expected, json_actual)
+        self.assertEqual(self.resource, json_actual)
 
     def test_we_return_pandas_dataframe(self):
-        actual_dataframe = src.retrieve_and_convert.convert_to_dataframe(self.json_expected)
+        dataframe_expected = return_dataframe_resource('AAPL_12_2019.json')
+
+        actual_dataframe = src.retrieve_and_convert.convert_to_dataframe(self.resource)
+
+        pd_test.assert_frame_equal(actual_dataframe, dataframe_expected)
+
+    def test_simple_moving_averages(self):
+        dataframe_expected = return_dataframe_resource('AAPL_12_2019_SMA_3_day.json')
+
+        dataframe = src.retrieve_and_convert.convert_to_dataframe(self.resource)
+        actual_moving_averages = src.moving_averages.get_simple_moving_averages(dataframe, 3)
+
+        pd_test.assert_frame_equal(actual_moving_averages, dataframe_expected)
+
+    def test_exponential_moving_averages(self):
+        dataframe_expected = return_dataframe_resource('AAPL_12_2019_EMA_9_day.json')
+
+        dataframe = src.retrieve_and_convert.convert_to_dataframe(self.resource)
+        actual_dataframe = src.moving_averages.get_exponential_moving_averages(dataframe, 9)
+
         print(actual_dataframe)
-        pd_test.assert_frame_equal(actual_dataframe, self.dataframe_expected)
-
-    def test_we_find_the_correct_moving_averages_with_window_3(self):
-        expected_moving_averages = self.dataframe_expected.rolling(window=3).mean()
-        dataframe = src.retrieve_and_convert.convert_to_dataframe(self.json_expected)
-        actual_moving_averages = src.moving_averages.return_moving_average(dataframe, 3)
-        pd_test.assert_frame_equal(actual_moving_averages, expected_moving_averages)
-
-    def test_we_find_the_correct_moving_averages_with_window_5(self):
-        expected_moving_averages = self.dataframe_expected.rolling(window=5).mean()
-        dataframe = src.retrieve_and_convert.convert_to_dataframe(self.json_expected)
-        actual_moving_averages = src.moving_averages.return_moving_average(dataframe, 5)
-        pd_test.assert_frame_equal(actual_moving_averages, expected_moving_averages)
+        pd_test.assert_frame_equal(actual_dataframe, dataframe_expected)
 
 
 if __name__ == '__main__':
