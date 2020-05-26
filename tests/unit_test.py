@@ -51,6 +51,9 @@ class TestRetrievalOfData(unittest.TestCase):
         print(actual_dataframe)
         pd_test.assert_frame_equal(actual_dataframe, dataframe_expected)
 
+    def test_mac_d_signal(self):
+        dataframe_expected = return_dataframe_resource('AAPL_MACD_signals.json')
+
 
 if __name__ == '__main__':
     unittest.main()

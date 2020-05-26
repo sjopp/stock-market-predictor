@@ -1,5 +1,6 @@
 import src.retrieve_convert as retrieve_and_convert
 import src.moving_averages as moving_averages
+import src.mac_d as mac_d
 
 
 def find_mac_d(stock, start_date, end_date):
