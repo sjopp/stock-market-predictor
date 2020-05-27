@@ -60,7 +60,7 @@ class TestRetrievalOfData(unittest.TestCase):
         print(actual_dataframe)
         pd_test.assert_frame_equal(actual_dataframe, dataframe_expected)
 
-    def test_mac_d_signal(self):
+    def test_mac_d_values(self):
         responses.add(responses.GET,
                       'https://api.tiingo.com/tiingo/daily/AAPL/prices?token'
                       '=387fd657063535f02ef5a5700aadd0b9286572e9&startDate=2019-12-1&endDate=2020-1-1',
@@ -68,6 +68,12 @@ class TestRetrievalOfData(unittest.TestCase):
 
         result = src.mac_d.generate_mac_d_values('AAPL', '2019-12-1', '2020-1-1', 4, 9)
         dataframe_expected = return_dataframe_resource('AAPL_MACD_values.json')
+        pd_test.assert_frame_equal(result, dataframe_expected)
+
+    def test_mac_d_signals(self):
+        mac_d_values = return_dataframe_resource('AAPL_MACD_values.json')
+        dataframe_expected = return_dataframe_resource('AAPL_MACD_signals.json')
+        result = src.mac_d.generate_mac_d_signal(mac_d_values)
         pd_test.assert_frame_equal(result, dataframe_expected)
 
 
