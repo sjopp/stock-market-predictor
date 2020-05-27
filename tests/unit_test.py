@@ -7,9 +7,9 @@ import pandas as pd
 import numpy as np
 
 
-def return_dataframe_resource(file_path):
+def return_dataframe_resource(file_path, columns):
     json_data = return_json_test_resource(file_path)
-    return pd.DataFrame(json_data, columns=['date', 'adjClose'], dtype=np.float64).set_index('date')
+    return pd.DataFrame(json_data, columns=columns, dtype=np.float64).set_index('date')
 
 
 class TestRetrievalOfData(unittest.TestCase):
@@ -28,14 +28,14 @@ class TestRetrievalOfData(unittest.TestCase):
         self.assertEqual(self.resource, json_actual)
 
     def test_we_return_pandas_dataframe(self):
-        dataframe_expected = return_dataframe_resource('AAPL_12_2019.json')
+        dataframe_expected = return_dataframe_resource('AAPL_12_2019.json', ['date', 'adjClose'])
 
         actual_dataframe = src.retrieve_and_convert.convert_to_dataframe(self.resource)
 
         pd_test.assert_frame_equal(actual_dataframe, dataframe_expected)
 
     def test_simple_moving_averages(self):
-        dataframe_expected = return_dataframe_resource('AAPL_12_2019_SMA_3_day.json')
+        dataframe_expected = return_dataframe_resource('AAPL_12_2019_SMA_3_day.json', ['date', 'adjClose'])
 
         dataframe = src.retrieve_and_convert.convert_to_dataframe(self.resource)
         actual_moving_averages = src.moving_averages.get_simple_moving_averages(dataframe, 3)
@@ -43,7 +43,7 @@ class TestRetrievalOfData(unittest.TestCase):
         pd_test.assert_frame_equal(actual_moving_averages, dataframe_expected)
 
     def test_exponential_slow_moving_averages(self):
-        dataframe_expected = return_dataframe_resource('AAPL_12_2019_EMA_9_day.json')
+        dataframe_expected = return_dataframe_resource('AAPL_12_2019_EMA_9_day.json', ['date', 'adjClose'])
 
         dataframe = src.retrieve_and_convert.convert_to_dataframe(self.resource)
         actual_dataframe = src.moving_averages.get_exponential_moving_averages(dataframe, 9)
@@ -52,7 +52,7 @@ class TestRetrievalOfData(unittest.TestCase):
         pd_test.assert_frame_equal(actual_dataframe, dataframe_expected)
 
     def test_exponential_fast_moving_averages(self):
-        dataframe_expected = return_dataframe_resource('AAPL_12_2019_EMA_4_day.json')
+        dataframe_expected = return_dataframe_resource('AAPL_12_2019_EMA_4_day.json', ['date', 'adjClose'])
 
         dataframe = src.retrieve_and_convert.convert_to_dataframe(self.resource)
         actual_dataframe = src.moving_averages.get_exponential_moving_averages(dataframe, 4)
@@ -67,12 +67,12 @@ class TestRetrievalOfData(unittest.TestCase):
                       json=self.resource, status=200)
 
         result = src.mac_d.generate_mac_d_values('AAPL', '2019-12-1', '2020-1-1', 4, 9)
-        dataframe_expected = return_dataframe_resource('AAPL_MACD_values.json')
+        dataframe_expected = return_dataframe_resource('AAPL_MACD_values.json', ['date', 'adjClose'])
         pd_test.assert_frame_equal(result, dataframe_expected)
 
     def test_mac_d_signals(self):
-        mac_d_values = return_dataframe_resource('AAPL_MACD_values.json')
-        dataframe_expected = return_dataframe_resource('AAPL_MACD_signals.json')
+        mac_d_values = return_dataframe_resource('AAPL_MACD_all_types_values.json', ['date', 'adjClose', 'signal'])
+        dataframe_expected = return_dataframe_resource('AAPL_MACD_all_types_signals.json', ['date', 'adjClose', 'signal'])
         result = src.mac_d.generate_mac_d_signal(mac_d_values)
         pd_test.assert_frame_equal(result, dataframe_expected)
 

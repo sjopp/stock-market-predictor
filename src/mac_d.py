@@ -1,6 +1,7 @@
 import src.retrieve_convert as retrieve_and_convert
 import src.moving_averages as moving_averages
 import pandas as pd
+import numpy as np
 
 
 def generate_mac_d_values(stock, start_date, end_date, fast_moving_average, slow_moving_average):
@@ -12,17 +13,18 @@ def generate_mac_d_values(stock, start_date, end_date, fast_moving_average, slow
 
 
 def generate_mac_d_signal(mac_d_dataframe):
+    signals = [np.float64(0)]
     for i in range(mac_d_dataframe.shape[0]):
         if i == 0:
-            mac_d_dataframe.iloc[i].append(pd.Series({'signal': 'NONE'}), ignore_index=True)
-            break
-        current_mac_d_value = mac_d_dataframe.iloc[i]
-        previous_mac_d_value = mac_d_dataframe.iloc[i-1]
-        if previous_mac_d_value < 0 and current_mac_d_value > 0:
-            mac_d_dataframe.iloc[i].append(pd.Series({'signal': "SELL"}), ignore_index=True)
-        elif previous_mac_d_value > 0 and current_mac_d_value < 0:
-            mac_d_dataframe.iloc[i].append(pd.Series({'signal': "BUY"}), ignore_index=True)
+            continue
+        current_mac_d_value = mac_d_dataframe.iloc[i]['adjClose']
+        previous_mac_d_value = mac_d_dataframe.iloc[i-1]['adjClose']
+        if previous_mac_d_value < 0 and current_mac_d_value >= 0:
+            signals.append(np.float64(-1))
+        elif previous_mac_d_value >= 0 and current_mac_d_value < 0:
+            signals.append(np.float64(1))
         else:
-            mac_d_dataframe.iloc[i].append(pd.Series({'signal': "NONE"}), ignore_index=True)
+            signals.append(np.float64(0))
 
+    mac_d_dataframe['signal'] = signals
     return mac_d_dataframe
