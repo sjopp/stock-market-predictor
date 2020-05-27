@@ -2,6 +2,11 @@ import requests
 import pandas as pd
 
 
+def get_stock_dataframe(stock_symbol, start_date, end_date):
+    json_data = get_stock_data(stock_symbol, start_date, end_date)
+    return convert_to_dataframe(json_data)
+
+
 def get_stock_data(stock_symbol, start_date, end_date):
     url = f'https://api.tiingo.com/tiingo/daily/{stock_symbol}/prices?'
     params = {
