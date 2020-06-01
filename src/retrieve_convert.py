@@ -4,7 +4,8 @@ import pandas as pd
 
 def get_stock_dataframe(stock_symbol, start_date, end_date):
     json_data = get_stock_data(stock_symbol, start_date, end_date)
-    return convert_to_dataframe(json_data)
+    dataframe = pd.DataFrame(json_data, columns=['date', 'adjClose']).set_index('date')
+    return dataframe
 
 
 def get_stock_data(stock_symbol, start_date, end_date):
@@ -16,8 +17,3 @@ def get_stock_data(stock_symbol, start_date, end_date):
     }
     response = requests.get(url, params)
     return response.json()
-
-
-def convert_to_dataframe(json_data):
-    dataframe = pd.DataFrame(json_data, columns=['date', 'adjClose']).set_index('date')
-    return dataframe

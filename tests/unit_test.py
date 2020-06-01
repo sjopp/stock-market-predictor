@@ -28,34 +28,57 @@ class TestRetrievalOfData(unittest.TestCase):
 
         self.assertEqual(self.resource_AAPL_12_2019, json_actual)
 
+    @responses.activate
     def test_we_return_pandas_dataframe(self):
+        responses.add(responses.GET,
+                      'https://api.tiingo.com/tiingo/daily/AAPL/prices?token'
+                      '=387fd657063535f02ef5a5700aadd0b9286572e9&startDate=2019-12-1&endDate=2020-1-1',
+                      json=self.resource_AAPL_12_2019, status=200)
+
         dataframe_expected = return_dataframe_resource('AAPL/AAPL_12_2019.json', ['date', 'adjClose'])
 
-        actual_dataframe = src.retrieve_and_convert.convert_to_dataframe(self.resource_AAPL_12_2019)
+        actual_dataframe = src.retrieve_and_convert.get_stock_dataframe('AAPL', '2019-12-1', '2020-1-1')
 
         pd_test.assert_frame_equal(actual_dataframe, dataframe_expected)
 
+    @responses.activate
     def test_simple_moving_averages(self):
+        responses.add(responses.GET,
+                      'https://api.tiingo.com/tiingo/daily/AAPL/prices?token'
+                      '=387fd657063535f02ef5a5700aadd0b9286572e9&startDate=2019-12-1&endDate=2020-1-1',
+                      json=self.resource_AAPL_12_2019, status=200)
+
         dataframe_expected = return_dataframe_resource('AAPL/AAPL_12_2019_SMA_3_day.json', ['date', 'adjClose'])
 
-        dataframe = src.retrieve_and_convert.convert_to_dataframe(self.resource_AAPL_12_2019)
+        dataframe = src.retrieve_and_convert.get_stock_dataframe('AAPL', '2019-12-1', '2020-1-1')
         actual_moving_averages = src.moving_averages.get_simple_moving_averages(dataframe, 3)
 
         pd_test.assert_frame_equal(actual_moving_averages, dataframe_expected)
 
+    @responses.activate
     def test_exponential_slow_moving_averages(self):
+        responses.add(responses.GET,
+                      'https://api.tiingo.com/tiingo/daily/AAPL/prices?token'
+                      '=387fd657063535f02ef5a5700aadd0b9286572e9&startDate=2019-12-1&endDate=2020-1-1',
+                      json=self.resource_AAPL_12_2019, status=200)
+
         dataframe_expected = return_dataframe_resource('AAPL/AAPL_12_2019_EMA_9_day.json', ['date', 'adjClose'])
 
-        dataframe = src.retrieve_and_convert.convert_to_dataframe(self.resource_AAPL_12_2019)
+        dataframe = src.retrieve_and_convert.get_stock_dataframe('AAPL', '2019-12-1', '2020-1-1')
         actual_dataframe = src.moving_averages.get_exponential_moving_averages(dataframe, 9)
 
         print(actual_dataframe)
         pd_test.assert_frame_equal(actual_dataframe, dataframe_expected)
 
+    @responses.activate
     def test_exponential_fast_moving_averages(self):
+        responses.add(responses.GET,
+                      'https://api.tiingo.com/tiingo/daily/AAPL/prices?token'
+                      '=387fd657063535f02ef5a5700aadd0b9286572e9&startDate=2019-12-1&endDate=2020-1-1',
+                      json=self.resource_AAPL_12_2019, status=200)
         dataframe_expected = return_dataframe_resource('AAPL/AAPL_12_2019_EMA_4_day.json', ['date', 'adjClose'])
 
-        dataframe = src.retrieve_and_convert.convert_to_dataframe(self.resource_AAPL_12_2019)
+        dataframe = src.retrieve_and_convert.get_stock_dataframe('AAPL', '2019-12-1', '2020-1-1')
         actual_dataframe = src.moving_averages.get_exponential_moving_averages(dataframe, 4)
 
         print(actual_dataframe)

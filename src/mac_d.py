@@ -13,9 +13,7 @@ def generate_mac_d_values(stock, start_date, end_date, fast_moving_average, slow
 
 def generate_mac_d_signal(mac_d_dataframe):
     signals = [np.float64(0)]
-    for i in range(mac_d_dataframe.shape[0]):
-        if i == 0:
-            continue
+    for i in range(1, mac_d_dataframe.shape[0]):
         current_mac_d_value = mac_d_dataframe.iloc[i]['adjClose']
         previous_mac_d_value = mac_d_dataframe.iloc[i - 1]['adjClose']
         if previous_mac_d_value < 0 and current_mac_d_value >= 0:
@@ -33,14 +31,10 @@ def plot_mac_d(stock, start_date, end_date, fast_moving_average, slow_moving_ave
     price_dataframe, fast_moving_average_df, slow_moving_average_df = get_moving_averages(stock, start_date, end_date,
                                                                                           fast_moving_average,
                                                                                           slow_moving_average)
-    plot_lines(price_dataframe, fast_moving_average_df, slow_moving_average_df)
-
-
-def plot_lines(stock_data, ema_fast, ema_slow):
-    dates = stock_data.index.values
-    plt.plot(dates, stock_data['adjClose'], label='Price')
-    plt.plot(dates, ema_fast['adjClose'], label='Fast Moving Average')
-    plt.plot(dates, ema_slow['adjClose'], label='Slow Moving Average')
+    dates = price_dataframe.index.values
+    plt.plot(dates, price_dataframe['adjClose'], label='Price')
+    plt.plot(dates, fast_moving_average_df['adjClose'], label='Fast Moving Average')
+    plt.plot(dates, slow_moving_average_df['adjClose'], label='Slow Moving Average')
     plt.legend()
     plt.show()
 
