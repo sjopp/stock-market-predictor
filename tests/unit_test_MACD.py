@@ -1,18 +1,11 @@
-from .context import src
+from .context import src, return_dataframe_resource
 from .context import return_json_test_resource
 import unittest
 import responses
 import pandas.testing as pd_test
-import pandas as pd
-import numpy as np
 
 
-def return_dataframe_resource(file_path, columns):
-    json_data = return_json_test_resource(file_path)
-    return pd.DataFrame(json_data, columns=columns, dtype=np.float64).set_index('date')
-
-
-class TestRetrievalOfData(unittest.TestCase):
+class TestMACDCalculations(unittest.TestCase):
 
     resource_AAPL_12_2019 = return_json_test_resource('AAPL/AAPL_12_2019.json')
     resource_MSFT_2019 = return_json_test_resource('MSFT/MSFT_2019.json')
