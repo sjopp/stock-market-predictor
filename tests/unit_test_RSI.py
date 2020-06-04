@@ -14,9 +14,9 @@ class TestRSICalculations(unittest.TestCase):
         actual_dataframe = src.rsi.append_price_difference(self.dataframe_AAPL_12_2019)
         pd_test.assert_frame_equal(actual_dataframe, expected_dataframe)
 
-    def test_we_return_simple_moving_averages_column_correctly(self):
+    def test_we_return_simple_moving_averages_ups_and_downs_column_correctly(self):
         expected_dataframe = return_dataframe_resource('AAPL/AAPL_12_2019_RSI.json',
-                                                       ['date', 'adjClose', 'ups', 'downs', 'smaUp'])
+                                                       ['date', 'adjClose', 'ups', 'downs', 'smaUp', 'smaDown'])
         actual_dataframe = src.rsi.append_sma(self.dataframe_AAPL_12_2019_price_differences)
         pd_test.assert_frame_equal(actual_dataframe, expected_dataframe)
 
