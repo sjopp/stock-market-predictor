@@ -27,7 +27,7 @@ class TestRSICalculations(unittest.TestCase):
 
     def test_we_return_exponential_moving_averages_ups_column_correctly(self):
         expected_dataframe = return_dataframe_resource('AAPL/AAPL_12_2019_RSI.json',
-                                                       ['date', 'adjClose', 'ups', 'downs', 'emaUp'])
+                                                       ['date', 'adjClose', 'ups', 'downs', 'emaUp', 'emaDown'])
         print(expected_dataframe)
         actual_dataframe = src.rsi.append_ema(return_dataframe_resource('AAPL/AAPL_12_2019_RSI.json',
                                                                         ['date', 'adjClose', 'ups', 'downs']))
