@@ -1,5 +1,4 @@
-from .context import src, return_dataframe_resource
-from .context import return_json_test_resource
+from tests.context import src, return_dataframe_resource, return_json_resource
 import unittest
 import responses
 import pandas.testing as pd_test
@@ -7,8 +6,8 @@ import pandas.testing as pd_test
 
 class TestMACDCalculations(unittest.TestCase):
 
-    resource_AAPL_12_2019 = return_json_test_resource('AAPL/AAPL_12_2019.json')
-    resource_MSFT_2019 = return_json_test_resource('MSFT/MSFT_2019.json')
+    resource_AAPL_12_2019 = return_json_resource('AAPL/AAPL_12_2019.json')
+    resource_MSFT_2019 = return_json_resource('MSFT/MSFT_2019.json')
 
     @responses.activate
     def test_return_AAPL_current_stock_data_from_api(self):

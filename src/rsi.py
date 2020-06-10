@@ -23,3 +23,9 @@ def append_sma(price_difference_dataframe):
     price_difference_dataframe['smaUp'] = sma_dataframe['ups']
     price_difference_dataframe['smaDown'] = sma_dataframe['downs']
     return price_difference_dataframe
+
+
+def append_ema(price_difference_dataframe):
+    ema_dataframe = moving_averages.get_exponential_moving_averages(price_difference_dataframe, 9)
+    price_difference_dataframe['emaUp'] = ema_dataframe['ups']
+    return price_difference_dataframe
