@@ -34,6 +34,15 @@ class TestRSICalculations(unittest.TestCase):
         print(actual_dataframe)
         pd_test.assert_frame_equal(actual_dataframe, expected_dataframe)
 
+    def test_we_return_relative_stress_value(self):
+        expected_dataframe = return_dataframe_resource('AAPL/AAPL_12_2019_RSI.json',
+                                                       ['date', 'adjClose', 'ups', 'downs', 'emaUp', 'emaDown', "rs"])
+        print(expected_dataframe)
+        actual_dataframe = src.rsi.append_relative_strength(return_dataframe_resource('AAPL/AAPL_12_2019_RSI.json',
+                                                                                      ['date', 'adjClose', 'ups', 'downs', 'emaUp', 'emaDown']))
+        print(actual_dataframe)
+        pd_test.assert_frame_equal(actual_dataframe, expected_dataframe)
+
 
 if __name__ == '__main__':
     unittest.main()

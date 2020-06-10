@@ -30,3 +30,15 @@ def append_ema(price_difference_dataframe):
     price_difference_dataframe['emaUp'] = ema_dataframe['ups']
     price_difference_dataframe['emaDown'] = ema_dataframe['downs']
     return price_difference_dataframe
+
+
+def append_relative_strength(price_difference_dataframe):
+    relative_strengths = []
+    for i in range(price_difference_dataframe.shape[0]):
+        if price_difference_dataframe.iloc[i]['emaDown'] == 0:
+            relative_strengths.append(np.float64(0))
+        else:
+            strength = price_difference_dataframe.iloc[i]['emaUp'] / price_difference_dataframe.iloc[i]['emaDown']
+            relative_strengths.append(strength)
+    price_difference_dataframe['rs'] = relative_strengths
+    return price_difference_dataframe
